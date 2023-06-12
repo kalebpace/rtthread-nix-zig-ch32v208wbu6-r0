@@ -2,9 +2,13 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     utils.url = "github:numtide/flake-utils";
+    fenix = {
+      url = "github:nix-community/fenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, utils }:
+  outputs = { self, nixpkgs, utils, fenix }:
     utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
@@ -18,6 +22,8 @@
           inherit pkgs;
           toolchain-gcc = mrs-toolchain.gcc;
         };
+
+        wchisp = import ./nix/wchisp { inherit pkgs fenix system; };
 
         vsCodeWithExtensions = with pkgs; vscode-with-extensions.override {
           vscode = vscodium;
@@ -49,7 +55,7 @@
       in
       rec {
         packages = {
-          inherit rtthread mrs-toolchain;
+          inherit rtthread mrs-toolchain wchisp;
           default = with pkgs.stdenv; mkDerivation {
             name = "hello-world-ch32";
             inherit buildInputs;
@@ -63,16 +69,28 @@
         };
 
         apps = {
-          default = {
-            type = "app";
-            program = toString (pkgs.writeShellScript "flash" 
-            ''
-              ${mrs-toolchain.openocd}/bin/openocd  \
-                -f ${mrs-toolchain.openocd}/bin/wch-riscv.cfg \
-                -c init \
-                -c halt \
-                -c 'flash write_image ${rtthread.bsp.wch.risc-v.ch32v208w-r0}/rtthread.bin'
-            '');
+          wch-link = {
+            flash = {
+              type = "app";
+              program = toString (pkgs.writeShellScript "flash"
+                ''
+                  ${mrs-toolchain.openocd}/bin/openocd  \
+                    -f ${mrs-toolchain.openocd}/bin/wch-riscv.cfg \
+                    -c init \
+                    -c halt \
+                    -c 'flash write_image ${rtthread.bsp.wch.risc-v.ch32v208w-r0}/rtthread.bin'
+                '');
+            };
+          };
+          
+          wchisp = {
+            flash = {
+              type = "app";
+              program = toString (pkgs.writeShellScript "flash"
+                ''
+                  ${wchisp}/bin/wchisp flash ${rtthread.bsp.wch.risc-v.ch32v208w-r0}/rtthread.bin
+                '');
+            };
           };
         };
 
