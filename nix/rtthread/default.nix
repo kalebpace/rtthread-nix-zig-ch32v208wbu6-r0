@@ -6,11 +6,11 @@ let
     rev = "0b6f7743f142daff066d14b99b85a60eb0e8a4a0";
     hash = "sha256-Fxzd9Gtq9uvJ9MHlwdE9WYUWpvTUotI2s+NWOrF5blI=";
   };
-  
+
   env = import ./env.nix { inherit pkgs; };
 in
 rec {
-  root = with pkgs; stdenv.mkDerivation {
+  root = with pkgs; stdenvNoCC.mkDerivation {
     name = "rtthread";
     buildInputs = [ unzip ];
     src = rtthread;
@@ -22,7 +22,7 @@ rec {
   };
 
   bsp.wch.risc-v = {
-    ch32v208w-r0 = with pkgs; stdenv.mkDerivation {
+    ch32v208w-r0 = with pkgs; stdenvNoCC.mkDerivation {
       name = "ch32v208w-r0";
       nativeBuildInputs = [
         unzip
@@ -59,5 +59,4 @@ rec {
       '';
     };
   };
-
 }

@@ -14,8 +14,9 @@ let
     hash = "sha256-gKCfzvsiE8IdG7VFoMqOs//7oyznNuPUhhGO75kfKmA=";
   };
 in
-with pkgs; stdenv.mkDerivation {
+with pkgs; stdenvNoCC.mkDerivation {
   name = "env";
+  description = "Populates the .env directory to circumvent menuconfig cloning dependencies into it";
   buildInputs = [ unzip ];
   src = env; 
   phases = [ "unpackPhase" "installPhase" ];
@@ -31,5 +32,4 @@ with pkgs; stdenv.mkDerivation {
 
     cp -r ./tools ./packages $out
   '';
-
 }

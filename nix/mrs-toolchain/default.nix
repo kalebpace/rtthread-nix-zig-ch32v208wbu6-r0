@@ -14,7 +14,7 @@ let
   };
 in
 {
-  openocd = with pkgs; stdenv.mkDerivation {
+  openocd = with pkgs; stdenvNoCC.mkDerivation {
     name = "openocd";
     buildInputs = [ unzip ];
     src = mounriver-toolchain;
@@ -28,7 +28,7 @@ in
     '';
   };
 
-  gcc = with pkgs; stdenv.mkDerivation {
+  gcc = with pkgs; stdenvNoCC.mkDerivation {
     name = "gcc";
     buildInputs = [ unzip ];
     src = mounriver-toolchain;
