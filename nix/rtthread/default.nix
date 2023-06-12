@@ -1,4 +1,4 @@
-{ pkgs, toolchain-gcc }:
+{ pkgs, gcc }:
 let
   rtthread = with pkgs; fetchFromGitHub {
     owner = "RT-Thread";
@@ -34,7 +34,7 @@ rec {
       sourceRoot = "source/bsp/wch/risc-v/ch32v208w-r0";
       phases = [ "unpackPhase" "buildPhase" "installPhase" ];
       buildPhase = ''
-        export RTT_EXEC_PATH=${toolchain-gcc}/bin
+        export RTT_EXEC_PATH=${gcc}/bin
         
         # Menuconfig tries to write env tools to home so a shim is needed
         # https://github.com/RT-Thread/rt-thread/blob/1d239db59e58e0439d9f4fc61de44221bf5d9535/tools/menuconfig.py#L148

@@ -1,4 +1,4 @@
-{ pkgs, fenix, system }:
+{ pkgs, fenix }:
 let
   wchisp = pkgs.fetchFromGitHub {
     owner = "ch32-rs";
@@ -7,7 +7,7 @@ let
     sha256 = "sha256-iBN+sBHu9vD3nwy0FAP3Uut5+uV5LTvSK9kqCGhLnfQ=";
   };
 
-  toolchain = fenix.packages.${system}.minimal.toolchain;
+  toolchain = fenix.packages.${pkgs.stdenv.hostPlatform.system}.minimal.toolchain;
 
   darwinDeps = with pkgs; [
     libiconv

@@ -12,60 +12,22 @@
     utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
-        buildInputs = with pkgs; [
-          scons
-          zig
-        ];
 
+        vscodeWithExtensions = import ./nix/vscodeWithExtensions.nix { inherit pkgs; };
+
+        wchisp = import ./nix/wchisp { inherit pkgs fenix; };
         mrs-toolchain = import ./nix/mrs-toolchain { inherit pkgs; };
-        rtthread = import ./nix/rtthread {
-          inherit pkgs;
-          toolchain-gcc = mrs-toolchain.gcc;
-        };
+        rtthread = import ./nix/rtthread { inherit pkgs; inherit (mrs-toolchain) gcc; };
 
-        wchisp = import ./nix/wchisp { inherit pkgs fenix system; };
-
-        vsCodeWithExtensions = with pkgs; vscode-with-extensions.override {
-          vscode = vscodium;
-          vscodeExtensions = with vscode-extensions; [
-            jnoortheen.nix-ide
-            arrterian.nix-env-selector
-            asvetliakov.vscode-neovim
-          ] ++ vscode-utils.extensionsFromVscodeMarketplace [
-            {
-              name = "gitlens";
-              publisher = "eamodio";
-              version = "latest";
-              sha256 = "sha256-/z49Lv9p7CL+FtjvZfI8KUZriqA2l/orlnW/MoZpP9E=";
-            }
-            {
-              name = "vscode-zig";
-              publisher = "ziglang";
-              version = "latest";
-              sha256 = "sha256-szG/Fm86RWWNITIYNvCQmEv8tx2VCAxtkXyQrb7Wsn4=";
-            }
-            {
-              name = "rt-thread-studio";
-              publisher = "RT-Thread";
-              version = "latest";
-              sha256 = "sha256-obQjGowO/DOuMaWBWqrRdlCyvu/WxefMn5M09neUJMI=";
-            }
-          ];
-        };
+        default = import ./default.nix { inherit pkgs; };
       in
       rec {
         packages = {
-          inherit rtthread mrs-toolchain wchisp;
-          default = with pkgs.stdenv; mkDerivation {
-            name = "hello-world-ch32";
-            inherit buildInputs;
-            src = ./.;
-            phases = [ "unpackPhase" "installPhase" ];
-            installPhase = ''
-              mkdir -p $out
-              cp -r . $out
-            '';
-          };
+          inherit
+            rtthread
+            mrs-toolchain
+            wchisp
+            default;
         };
 
         apps = {
@@ -82,7 +44,7 @@
                 '');
             };
           };
-          
+
           wchisp = {
             flash = {
               type = "app";
@@ -96,9 +58,11 @@
 
         devShells = {
           default = with pkgs; (mkShell.override { stdenv = stdenvNoCC; } {
-            nativeBuildInputs = buildInputs ++ [
-              vsCodeWithExtensions
+            nativeBuildInputs = [
+              vscodeWithExtensions
               neovim
+              scons
+              zig
             ];
           });
         };
