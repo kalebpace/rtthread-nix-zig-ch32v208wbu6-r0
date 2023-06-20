@@ -51,7 +51,7 @@
             rtthread
             mrs-toolchain
             wchisp;
-          default = import ./. { inherit pkgs; };
+          default = import ./. { inherit pkgs rtthread; };
         };
 
         apps = {

@@ -1,34 +1,65 @@
 const std = @import("std");
 
+const CpuModel = std.Target.Cpu.Model;
+const CpuFeature = std.Target.Cpu.Feature;
+const RiscvFeature = std.Target.riscv.Feature;
+
+const qingke_v4c_cpu = CpuModel{
+    // .name = "qingke_v4c",
+    .name = "generic",
+    .llvm_name = "qingke-v4c",
+    .features = CpuFeature.feature_set_fns(RiscvFeature).featureSet(&[_]RiscvFeature{
+        .m,
+        .a,
+        .c,
+    }),
+};
+
 pub fn build(b: *std.build.Builder) void {
-    // Standard target options allows the person running `zig build` to choose
-    // what target to build for. Here we do not override the defaults, which
-    // means any target is allowed, and the default is native. Other options
-    // for restricting supported target set are available.
-    const target = b.standardTargetOptions(.{});
+    // Target QingKe V4C: RISC-V R32IMAC
+    const target = .{
+        // .cpu_arch = .thumb,
+        .cpu_arch = std.Target.Cpu.Arch.riscv32,
+        // sifive_e21 seems to share the same feature set as the QingKe V4C
+        // .cpu_model = .{ .explicit = &std.Target.riscv.cpu.sifive_e21 },
+        .cpu_model = .{ .explicit = &qingke_v4c_cpu },
+        .os_tag = .freestanding,
+        // .abi = .eabihf,
+        .abi = .eabi,
+    };
 
     // Standard release options allow the person running `zig build` to select
     // between Debug, ReleaseSafe, ReleaseFast, and ReleaseSmall.
     const mode = b.standardReleaseOptions();
 
-    const exe = b.addExecutable("ch32v208-binary-clock", "src/main.zig");
-    exe.setTarget(target);
-    exe.setBuildMode(mode);
-    exe.install();
+    const elf = b.addExecutable("zig-ch32-blink.elf", "src/main.zig");
+    elf.setTarget(target);
+    elf.setBuildMode(mode);
 
-    const run_cmd = exe.run();
-    run_cmd.step.dependOn(b.getInstallStep());
-    if (b.args) |args| {
-        run_cmd.addArgs(args);
-    }
+    // const vector_obj = b.addObject("vector", "src/vector.zig");
+    // vector_obj.setTarget(target);
+    // vector_obj.setBuildMode(mode);
 
-    const run_step = b.step("run", "Run the app");
-    run_step.dependOn(&run_cmd.step);
+    // elf.addObject(vector_obj);
+    // result directory provided to build environment by nix
+    elf.setLinkerScriptPath(.{ .path = "result/bsp/wch/risc-v/ch32v208w-r0/board/linker_scripts/link.lds" });
 
-    const exe_tests = b.addTest("src/main.zig");
-    exe_tests.setTarget(target);
-    exe_tests.setBuildMode(mode);
+    const bin = b.addInstallRaw(elf, "zig-ch32-blink.bin", .{});
+    const bin_step = b.step("bin", "Generate binary file to be flashed");
+    bin_step.dependOn(&bin.step);
 
-    const test_step = b.step("test", "Run unit tests");
-    test_step.dependOn(&exe_tests.step);
+    // const flash_cmd = b.addSystemCommand(&[_][]const u8{
+    //     "st-flash",
+    //     "write",
+    //     b.getInstallPath(bin.dest_dir, bin.dest_filename),
+    //     "0x8000000",
+    // });
+    // flash_cmd.step.dependOn(&bin.step);
+    // const flash_step = b.step("flash", "Flash and run the app on your STM32F4Discovery");
+    // flash_step.dependOn(&flash_cmd.step);
+
+    b.default_step.dependOn(&elf.step);
+    b.default_step.dependOn(&bin.step);
+    b.installArtifact(elf);
+    b.installArtifact(bin.artifact);
 }
