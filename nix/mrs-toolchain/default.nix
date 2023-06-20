@@ -17,28 +17,24 @@ in
   openocd = with pkgs; stdenvNoCC.mkDerivation {
     name = "openocd";
     buildInputs = [ unzip ];
-    src = mounriver-toolchain;
+    src = mounriver-toolchain + "/openocd_${plat}.zip";
+    sourceRoot = "openocd_${plat}/openocd_${plat}";
     phases = [ "unpackPhase" "installPhase" ];
     installPhase = ''
       mkdir -p $out
-      
-      unzip ./openocd_${plat}.zip
-
-      cp -r ./openocd_${plat}/openocd_${plat}/* $out
+      cp -r ./* $out
     '';
   };
 
   gcc = with pkgs; stdenvNoCC.mkDerivation {
     name = "gcc";
     buildInputs = [ unzip ];
-    src = mounriver-toolchain;
+    src = mounriver-toolchain + "/xpack-riscv-none-embed-gcc-8.2.0.zip";
+    sourceRoot = "xpack-riscv-none-embed-gcc-8.2.0";
     phases = [ "unpackPhase" "installPhase" ];
     installPhase = ''
       mkdir -p $out
-      
-      unzip ./xpack-riscv-none-embed-gcc-8.2.0.zip
-
-      cp -r ./xpack-riscv-none-embed-gcc-8.2.0/* $out
+      cp -r ./* $out
     '';
   };
 }
