@@ -3,15 +3,15 @@ let
   env = with pkgs; fetchFromGitHub {
     owner = "RT-Thread";
     repo = "env";
-    rev = "master";
-    hash = "sha256-Z2wNaqalFd2GcLEFk0gwIgleJV8Y3sWO6PeQPxlcY2I=";
+    rev = "e028fbd8fcbe0e1e86bc9de33274802c86095d31";
+    sha256 = "sha256-Z2wNaqalFd2GcLEFk0gwIgleJV8Y3sWO6PeQPxlcY2I=";
   };
 
   packages = with pkgs; fetchFromGitHub {
     owner = "RT-Thread";
     repo = "packages";
-    rev = "master";
-    hash = "sha256-gKCfzvsiE8IdG7VFoMqOs//7oyznNuPUhhGO75kfKmA=";
+    rev = "37c6a79152f90414467e8e9b4be0dc439be73de8";
+    sha256 = "sha256-3y08jGriIt6Rldf3VVHFlPIl4skUDXj1TW7C6Gu8Quo=";
   };
 in
 with pkgs; stdenvNoCC.mkDerivation {

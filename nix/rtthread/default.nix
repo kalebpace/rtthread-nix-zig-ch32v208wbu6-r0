@@ -42,7 +42,7 @@ rec {
         export ENV_ROOT=$HOME
         cp -r ${env} .env
         export PATH=./.env/tools/scripts:$PATH
-
+        
         # FIXME: scons links libraries in parent directory 
         # which is outside of the allowed build scope.
         # What is a good way to address /etc/paths.d error in sandboxed builder?

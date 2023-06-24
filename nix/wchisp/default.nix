@@ -3,7 +3,7 @@ let
   wchisp = pkgs.fetchFromGitHub {
     owner = "ch32-rs";
     repo = "wchisp";
-    rev = "master";
+    rev = "461639201622d52bf7c869ab074be4e69a78486e";
     sha256 = "sha256-iBN+sBHu9vD3nwy0FAP3Uut5+uV5LTvSK9kqCGhLnfQ=";
   };
 
@@ -28,5 +28,5 @@ with pkgs; (makeRustPlatform {
     [
       darwinDeps
     ];
-  cargoSha256 = "sha256-qT8soQlD/xo9Ud1lS96/c+tJynDbeuYR1n98m1Z3MDg=";
+  cargoSha256 = "sha256-Q4jet3cDbfXzO94AermMy+FUqbqxoL45pEkS6oguJqc=";
 }

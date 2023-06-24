@@ -23,6 +23,7 @@
             jnoortheen.nix-ide
             arrterian.nix-env-selector
             asvetliakov.vscode-neovim
+            tomoki1207.pdf
           ] ++ vscode-utils.extensionsFromVscodeMarketplace [
             {
               name = "gitlens";
@@ -35,6 +36,12 @@
               publisher = "ziglang";
               version = "latest";
               sha256 = "sha256-szG/Fm86RWWNITIYNvCQmEv8tx2VCAxtkXyQrb7Wsn4=";
+            }
+            {
+              name = "rt-thread-studio";
+              publisher = "RT-Thread";
+              version = "latest";
+              sha256 = "sha256-obQjGowO/DOuMaWBWqrRdlCyvu/WxefMn5M09neUJMI=";
             }
             {
               name = "rt-thread-studio";
