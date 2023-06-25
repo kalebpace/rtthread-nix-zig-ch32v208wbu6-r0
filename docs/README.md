@@ -17,3 +17,5 @@
 - https://codepen.io/willmcneilly/pen/gMBJmv
 - http://wch-ic.com/downloads/WCHISPTool_Setup_exe.html
 - https://rbino.com/posts/zig-stm32-blink/
+- https://lupyuen.github.io/articles/zig
+- https://github.com/ziglang/zig/issues/9760

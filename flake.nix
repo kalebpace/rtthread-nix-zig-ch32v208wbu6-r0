@@ -94,6 +94,7 @@
               neovim
               scons
               zig
+              jq
             ];
           });
         };

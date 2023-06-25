@@ -8,6 +8,15 @@ let
   };
 
   env = import ./env.nix { inherit pkgs; };
+  
+  sconstructOverride = pkgs.writeTextDir "SConstruct" (builtins.readFile ./ch32v208w-r0/SConstruct);
+  rtconfigPyOverride = pkgs.writeTextDir "rtconfig.py" (builtins.readFile ./ch32v208w-r0/rtconfig.py);
+  darwinDeps = with pkgs; [
+    libiconv
+  ] ++ (with pkgs.darwin.apple_sdk_11_0.frameworks; [
+    Security
+    CoreFoundation
+  ]);
 in
 rec {
   root = with pkgs; stdenvNoCC.mkDerivation {
@@ -29,6 +38,10 @@ rec {
         scons
         git
         python311.pkgs.requests
+        zig
+        darwinDeps
+        llvmPackages_16.libllvm
+        llvmPackages_16.bintools
       ];
       src = rtthread;
       sourceRoot = "source/bsp/wch/risc-v/ch32v208w-r0";
@@ -48,6 +61,9 @@ rec {
         # What is a good way to address /etc/paths.d error in sandboxed builder?
         chmod 755 -R ../
         
+        cat ${sconstructOverride}/SConstruct > SConstruct
+        cat ${rtconfigPyOverride}/rtconfig.py > rtconfig.py
+        
         scons --menuconfig
         pkgs --update
         scons
@@ -55,6 +71,7 @@ rec {
 
       installPhase = ''
         mkdir -p $out
+        cp SConstruct rtconfig.py $out
         cp *.elf *.bin $out
       '';
     };
