@@ -32,6 +32,12 @@
               sha256 = "sha256-/z49Lv9p7CL+FtjvZfI8KUZriqA2l/orlnW/MoZpP9E=";
             }
             {
+              name = "markdown-all-in-one";
+              publisher = "yzhang";
+              version = "latest";
+              sha256 = "sha256-ZyvkRp0QTjoMEXRGHzp3udGngYcU9EkTCvx8o2CEaBE=";
+            }
+            {
               name = "vscode-zig";
               publisher = "ziglang";
               version = "latest";
