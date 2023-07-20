@@ -6,7 +6,7 @@ Setup Nix on macOS: https://zero-to-nix.com/start/install
 
 | Command                                            | Description
 | -------------------------------------------------- | --------------------------------------- |
-| `nix build .#rtthread.bsp.wch.risc-v.ch32v208w-r0` | Builds the [ch32v208w-r0 example project](https://github.com/RT-Thread/rt-thread/blob/0b6f7743f142daff066d14b99b85a60eb0e8a4a0/bsp/wch/risc-v/ch32v208w-r0/applications/main.) using the [MRS Toolchain for macOS](http://www.mounriver.com/download) |
+| `nix build .#rtthread.bsp.wch.risc-v.ch32v208w-r0` | Builds the [ch32v208w-r0 example project](https://github.com/RT-Thread/rt-thread/blob/0b6f7743f142daff066d14b99b85a60eb0e8a4a0/bsp/wch/risc-v/ch32v208w-r0/applications/main.c) using the [MRS Toolchain for macOS](http://www.mounriver.com/download) |
 | `nix run .#wchisp.flash` | Flash a board connected via USB-C and in download mode |
 | `nix run .#wch-link.flash` | Flash a board connected via WCH Link and in download mode |
 
